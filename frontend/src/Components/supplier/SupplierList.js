@@ -15,6 +15,7 @@ const SupplierList = () => {
   const [sortType, setSortType] = useState("all");
   const [formData, setFormData] = useState({
     _id: "",
+     
     name: "",
     companyName: "",
     itemCategory: "",
@@ -54,7 +55,7 @@ const SupplierList = () => {
     setFormData({
       _id: supplier._id,
       name: supplier.name,
-      companyName: supplier.companyName,
+      
       itemCategory: supplier.itemCategory,
       deliveryType: supplier.deliveryType,
       email: supplier.contactInfo.email,
@@ -68,7 +69,7 @@ const SupplierList = () => {
     try {
       await axios.put(`http://localhost:5005/api/suppliers/${formData._id}`, {
         name: formData.name,
-        companyName: formData.companyName,
+         
         itemCategory: formData.itemCategory,
         deliveryType: formData.deliveryType,
         contactInfo: {
@@ -106,7 +107,7 @@ const SupplierList = () => {
     .filter((supplier) => {
       if (searchTerm === "") return true;
       return supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        supplier.companyName.toLowerCase().includes(searchTerm.toLowerCase());
+        supplier.supplierId.toLowerCase().includes(searchTerm.toLowerCase());
     })
     .filter((supplier) => {
       if (sortType === "all") return true;
@@ -120,8 +121,9 @@ const SupplierList = () => {
     doc.autoTable({
       head: [["Name", "Company Name", "Item Category", "Delivery Type", "Email", "Phone", "Address"]],
       body: filteredSuppliers.map(supplier => [
+        supplier.supplierId,
         supplier.name,
-        supplier.companyName,
+         
         supplier.itemCategory,
         supplier.deliveryType,
         supplier.contactInfo.email,
@@ -181,9 +183,11 @@ const SupplierList = () => {
             <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
               <thead>
                 <tr className="bg-gray-300 text-gray-700 text-left">
-                  <th className="py-3 px-4 font-semibold uppercase">Name</th>
                   <th className="py-3 px-4 font-semibold uppercase">
-                    Company Name
+                  supplierId
+                  </th>
+                  <th className="py-3 px-4 font-semibold uppercase">
+                   Name
                   </th>
                   <th className="py-3 px-4 font-semibold uppercase">
                   Type of Fish Offered
@@ -205,8 +209,8 @@ const SupplierList = () => {
                       index % 2 === 0 ? "bg-gray-50" : "bg-white"
                     } hover:bg-gray-100 transition duration-200`}
                   >
+                    <td className="py-4 px-4">{supplier.supplierId}</td>
                     <td className="py-4 px-4">{supplier.name}</td>
-                    <td className="py-4 px-4">{supplier.companyName}</td>
                     <td className="py-4 px-4">{supplier.itemCategory}</td>
                     <td className="py-4 px-4">{supplier.deliveryType}</td>
                     <td className="py-4 px-4">{supplier.contactInfo.email}</td>
@@ -243,21 +247,21 @@ const SupplierList = () => {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <label className="block">
-                    Name:
+                    supplierId:
                     <input
                       type="text"
-                      name="name"
-                      value={formData.name}
+                      name="supplierId"
+                      value={formData.supplierId}
                       onChange={handleInputChange}
                       className="w-full p-3 border border-gray-300 rounded-lg"
                     />
                   </label>
                   <label className="block">
-                    Company Name:
+                    name:
                     <input
-                      type="text"
-                      name="companyName"
-                      value={formData.companyName}
+                      type="id"
+                      name="name"
+                      value={formData.name}
                       onChange={handleInputChange}
                       className="w-full p-3 border border-gray-300 rounded-lg"
                     />
