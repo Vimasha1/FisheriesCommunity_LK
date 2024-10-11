@@ -13,6 +13,7 @@ function AddRequest() {
     name: "",
     membership: "",
     gmail: "",
+    phone: "",
     amount: ""
   });
 
@@ -36,6 +37,7 @@ function AddRequest() {
       name: String(inputs.name),
       membership: Number(inputs.membership),
       gmail: String(inputs.gmail),
+      phone: Number(inputs.phone),
       amount: Number(inputs.amount),
     }).then(res => res.data);
   };
@@ -63,7 +65,7 @@ function AddRequest() {
               
               {/* Name Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Name</label>
+                <label className="block text-sm font-medium text-gray-700">Borrower's Name:</label>
                 <input
                   type="text"
                   name="name"
@@ -71,13 +73,13 @@ function AddRequest() {
                   value={inputs.name}
                   required
                   className="mt-1 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your name"
+                  placeholder="Enter name"
                 />
               </div>
 
               {/* Membership Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Membership</label>
+                <label className="block text-sm font-medium text-gray-700">Membership Period:</label>
                 <input
                   type="number"
                   name="membership"
@@ -85,13 +87,13 @@ function AddRequest() {
                   value={inputs.membership}
                   required
                   className="mt-1 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter membership number"
+                  placeholder="Enter membership period in years"
                 />
               </div>
 
               {/* Gmail Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Email</label>
+                <label className="block text-sm font-medium text-gray-700">Borrower's Email:</label>
                 <input
                   type="email"
                   name="gmail"
@@ -102,10 +104,33 @@ function AddRequest() {
                   placeholder="Enter email"
                 />
               </div>
+              {/* Phone Input */}
+<div>
+  <label className="block text-sm font-medium text-gray-700">Borrower's Phone Number:</label>
+  <input
+    type="tel"
+    name="phone"
+    onChange={handleChange}
+    onKeyPress={(e) => {
+      if (!/^[0-9]+$/.test(e.key)) {
+        e.preventDefault();
+      }
+    }}
+    value={inputs.phone}
+    required
+    maxLength={10}
+    minLength={10}
+    className="mt-1 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    placeholder="Enter 10-digit phone number"
+    title="Please enter a valid 10-digit phone number."
+  />
+</div>
+
+
 
               {/* Amount Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Amount</label>
+                <label className="block text-sm font-medium text-gray-700">Amount:</label>
                 <input
                   type="number"
                   name="amount"

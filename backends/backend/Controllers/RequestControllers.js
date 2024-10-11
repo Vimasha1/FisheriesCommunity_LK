@@ -22,13 +22,14 @@ return res.status(200).json({ requests });
 
 //data insert
 const addRequests = async (req, res, next) => {
-    const { name, membership, gmail, amount } = req.body;
+    const { name, membership, gmail, phone,amount } = req.body;
     let request;
     try {
         request = new Request({
             name,
             membership,
             gmail,
+            phone,
             amount,
         });
         await request.save();
@@ -62,13 +63,14 @@ const getRequestById = async (req, res, next) => {
 //update request details
 const updateRequest = async (req, res, next) => {
     const id = req.params.id;
-    const { name, membership, gmail, amount } = req.body;
+    const { name, membership, gmail, phone, amount } = req.body;
     let request;
     try {
         request = await Request.findByIdAndUpdate(id, {
             name: name,
             membership: membership,
             gmail: gmail,
+            phone: phone,
             amount: amount });
             request = await request.save();
     } catch (err) {

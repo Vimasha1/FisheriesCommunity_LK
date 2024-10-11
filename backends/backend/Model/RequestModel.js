@@ -21,6 +21,12 @@ const requestSchema = new Schema({
         
     },
 
+    phone:{
+        type:Number, //dataType
+        required:true, //validate
+        
+    },
+
     amount:{
         type:Number, //dataType
         required:true, //validate

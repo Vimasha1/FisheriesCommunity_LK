@@ -27,6 +27,7 @@ function Updaterequest() {
         name: String(inputs.name),
         membership: Number(inputs.membership),
         gmail: String(inputs.gmail),
+        phone: Number(inputs.phone),
         amount: Number(inputs.amount),
       })
       .then((res) => res.data);
@@ -66,7 +67,7 @@ function Updaterequest() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="relative">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Borrower's Name:</label>
                 <input
                   type="text"
                   name="name"
@@ -79,20 +80,20 @@ function Updaterequest() {
               </div>
 
               <div className="relative">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Membership</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Membership Period:</label>
                 <input
                   type="number"
                   name="membership"
                   onChange={handleChange}
                   value={inputs.membership || ""}
                   required
-                  placeholder="Enter Membership"
+                  placeholder="Enter Membership Period (in years)"
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div className="relative">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Gmail</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Borrower's Email:</label>
                 <input
                   type="email"
                   name="gmail"
@@ -105,7 +106,29 @@ function Updaterequest() {
               </div>
 
               <div className="relative">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Amount</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Borrower's Phone Number:</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  onChange={handleChange}
+                  onKeyPress={(e) => {
+                    if (!/^[0-9]+$/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  value={inputs.phone || ""}
+                  required
+                  maxLength={10}
+                  minLength={10}
+                  placeholder="Enter 10-digit phone number"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  title="Please enter a valid 10-digit phone number."
+                />
+                
+              </div>
+
+              <div className="relative">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Amount:</label>
                 <input
                   type="number"
                   name="amount"
