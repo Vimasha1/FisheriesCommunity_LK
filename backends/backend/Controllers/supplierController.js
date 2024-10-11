@@ -48,12 +48,12 @@ exports.getAllSuppliers = async (req, res) => {
 // Update supplier by ID
 exports.updateSupplierById = async (req, res) => {
   const { id } = req.params;
-  const { name, companyName, itemCategory, deliveryType, contactInfo, address } = req.body;
+  const { supplierId,name, itemCategory, deliveryType, contactInfo, address } = req.body;
 
   try {
     const updatedSupplier = await Supplier.findByIdAndUpdate(
       id,
-      { name, companyName, itemCategory, deliveryType, contactInfo, address },
+      { supplierId,name, itemCategory, deliveryType, contactInfo, address },
       { new: true }
     );
 
