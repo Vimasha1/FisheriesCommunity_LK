@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-function Boatrdb({ _id, name, Numberof, phone }) {
+function Boatrdb({ _id, name, Numberof, phone, category }) {
   const history = useNavigate();
 
   const deleteHandler = async () => {
@@ -23,6 +23,7 @@ function Boatrdb({ _id, name, Numberof, phone }) {
           <p><span className="font-bold text-blue-900">Name:</span> {name}</p>
           <p><span className="font-bold text-blue-900">Registration Number:</span> {Numberof}</p>
           <p><span className="font-bold text-blue-900">Phone:</span> {phone}</p>
+          <p><span className="font-bold text-blue-900">category:</span> {category}</p>
         </div>
       </div>
 
