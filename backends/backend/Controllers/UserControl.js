@@ -1,5 +1,6 @@
 // UserControl.js
 const User = require("../Model/UserModel");
+const Boat =require("../Model/boatregistationmodel")
 
 // Get all users
 const getAllUsers = async (req, res, next) => {
@@ -40,6 +41,17 @@ const getById = async (req, res, next) => {
 
 // Add a new user
 const addUser = async (req, res, next) => {
+    const { BoatID, FishType, Quantity,FishGrade,AddedDate,Price  } = req.body;
+    let user;
+
+
+    try {
+         //extract boat id
+         const boat=await Boat.findOne({_id:BoatID})
+         console.log(boat);
+         if(!boat){return res.status(404).json({ message: "Unable to find boat" })};
+         
+        user = new User({ BoatID, FishType, Quantity,FishGrade,AddedDate,Price});
     const { BoatID, FishType, Quantity } = req.body;
     let user;
 
@@ -57,6 +69,15 @@ const addUser = async (req, res, next) => {
 // Update user data
 const updateUser = async (req, res, next) => {
     const id = req.params.id;
+    const { BoatID, FishType, Quantity,FishGrade,AddedDate,Price } = req.body;
+    let user;
+
+    try {
+       
+        
+
+
+        user = await User.findByIdAndUpdate(id, { BoatID, FishType, Quantity,FishGrade,AddedDate,Price }, { new: true });
     const { BoatID, FishType, Quantity } = req.body;
     let user;
 
