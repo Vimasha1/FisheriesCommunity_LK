@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 // Display data
 function Details(props) {
   const { _id, BoatID, FishType, Quantity,FishGrade,AddedDate,Price } = props.user;
+  const { _id, BoatID, FishType, Quantity } = props.user;
 
   const history = useNavigate();
 

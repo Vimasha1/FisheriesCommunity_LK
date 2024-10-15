@@ -5,6 +5,10 @@ import Header from "../../Header";
 import Footer from "../../Footer";
 import SideNav from "../../SideNav";
 import StockNavbar from "./StockNavbar";
+import Header from "../../Header";  
+import Footer from "../../Footer";  
+import SideNav from "../../SideNav";  
+import StockNavbar from "./StockNavbar";  
 
 function AddNewScock() {
   const history = useNavigate();
@@ -20,8 +24,9 @@ function AddNewScock() {
   const [showPopup, setShowPopup] = useState(false); // State for popup visibility
   const navigate = useNavigate();
 
+  
+
   const handleChange = (e) => {
-    
     setInputs((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
@@ -71,6 +76,17 @@ function AddNewScock() {
 // Get today's date for min attribute
 const today = new Date().toISOString().split("T")[0];
 
+    sendRequest().then(() => history('/viewstock'));
+  };
+
+  const sendRequest = async () => {
+    await axios.post("http://localhost:5005/users", {
+      BoatID: String(inputs.BoatID),
+      FishType: String(inputs.FishType),
+      Quantity: Number(inputs.Quantity),
+    }).then(res => res.data);
+  };
+
   return (
     <div className="flex">
       {/* Side Navbar */}
@@ -92,6 +108,9 @@ const today = new Date().toISOString().split("T")[0];
             <h1 className="text-3xl font-bold text-center mb-8 text-blue-700">
               Add New Stock
             </h1>
+        <div className="flex-grow flex items-center justify-center py-12"> {/* Added padding for spacing */}
+          <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+            <h1 className="text-3xl font-bold text-center mb-8 text-blue-700">Add New Stock</h1>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="relative">
                 <input
@@ -106,6 +125,8 @@ const today = new Date().toISOString().split("T")[0];
               </div>
               <div className="relative">
                 <select
+                <input
+                  type="text"
                   name="FishType"
                   value={inputs.FishType}
                   onChange={handleChange}
@@ -143,6 +164,10 @@ const today = new Date().toISOString().split("T")[0];
                 </select>
               </div>
 
+                  placeholder="Fish Type"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
               <div className="relative">
                 <input
                   type="number"

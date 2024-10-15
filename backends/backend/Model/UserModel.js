@@ -37,3 +37,23 @@ const userSchema = new Schema({
 });
 
 module.exports = mongoose.model("UserModel", userSchema);
+    BoatID:{
+        type:String,
+        required:true
+    },
+
+    FishType:{
+        type:String,
+        required:true
+    },
+
+    Quantity:{
+        type:Number,
+        required:true
+    }
+});
+
+module.exports = mongoose.model(
+    "UserModel",
+    userSchema
+)

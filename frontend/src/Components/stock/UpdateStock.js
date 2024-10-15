@@ -46,6 +46,7 @@ function UpdateScock() {
   const handleSubmit = (e) => {
     e.preventDefault();
     sendRequest().then(() => history('/viewAstock'));
+    sendRequest().then(() => history('/viewstock'));
   };
 
   return (
@@ -93,6 +94,7 @@ function UpdateScock() {
                   type="number"
                   name="Quantity"
                   value={inputs.Quantity}
+                  value={inputs.Quantity || ""}
                   onChange={handleChange}
                   required
                   placeholder="Quantity"

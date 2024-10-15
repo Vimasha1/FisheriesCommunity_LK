@@ -8,6 +8,16 @@ import StockNavbar from "./StockNavbar.js";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { FaDownload } from "react-icons/fa";
+import React, { useState, useEffect } from 'react';
+import Details from '../stock/Details.js';
+import axios from "axios";
+import Header from '../../Header';  
+import Footer from '../../Footer';  
+import SideNav from '../../SideNav';  
+import StockNavbar from './StockNavbar.js';  
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { FaDownload } from 'react-icons/fa'; // Import the download icon
 
 const URL = "http://localhost:5005/users";
 
@@ -40,6 +50,10 @@ function ViewStock() {
   const [fishTypeFilter, setFishTypeFilter] = useState(""); // State for fish type filter
   const [sortOrder, setSortOrder] = useState(""); // State for sorting
   const [sortDirection, setSortDirection] = useState("asc"); // Ascending or descending
+function ViewStock() {
+  const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
   useEffect(() => {
     fetchHandler().then((data) => setUsers(data.users));
@@ -50,6 +64,14 @@ function ViewStock() {
       setUsers((prevUsers) => prevUsers.filter((user) => user._id !== id));
     });
   };
+  useEffect(() => {
+    setFilteredUsers(
+      users.filter((user) =>
+        user.BoatID.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.FishType.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, users]);
 
   // Function to download the stock report as a PDF
   const handleDownloadReport = () => {
@@ -80,6 +102,21 @@ function ViewStock() {
       ];
     });
 
+
+    doc.setFontSize(20);
+    doc.text('Stock Report', 14, 20);
+
+    // Define table columns and rows
+    const tableColumn = ['Boat ID', 'Fish Type', 'Weight', 'Quantity', 'Price'];
+    const tableRows = filteredUsers.map(user => [
+      user.BoatID,
+      user.FishType,
+      user.Weight,
+      user.Quantity,
+      user.Price
+    ]);
+
+    // Add table to PDF
     doc.autoTable({
       head: [tableColumn],
       body: tableRows,
@@ -121,6 +158,13 @@ function ViewStock() {
     new Set(users.map((user) => user.FishType))
   );
 
+      theme: 'grid',
+      styles: { halign: 'left' },
+    });
+
+    doc.save('stock-report.pdf');
+  };
+
   return (
     <div className="flex">
       {/* Side Navbar */}
@@ -142,6 +186,11 @@ function ViewStock() {
 
           {/* Search Bar, Fish Type Filter, Sort Dropdown and PDF Download Button */}
           <div className="flex justify-between items-center mb-6">
+          <h1 className="text-4xl font-bold text-gray-800 text-center mb-8">Stock</h1>
+
+          {/* Search Bar and PDF Download Button */}
+          <div className="flex justify-between items-center mb-6">
+            {/* Search Feature */}
             <input
               type="text"
               placeholder="Search by Boat ID or Fish Type..."
@@ -181,6 +230,8 @@ function ViewStock() {
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
             </select>
+
+            {/* PDF Download Button */}
             <button
               onClick={handleDownloadReport}
               className="bg-green-500 text-white px-4 py-2 ml-4 rounded-lg hover:bg-green-600 transition duration-200 flex items-center"
@@ -261,6 +312,17 @@ function ViewStock() {
                   })}
               </tbody>
             </table>
+          {/* Stock Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredUsers && filteredUsers.length > 0 ? (
+              filteredUsers.map((user, i) => (
+                <div key={i} className="bg-white rounded-lg shadow-md p-6 transition transform hover:scale-105 hover:shadow-lg">
+                  <Details user={user} />
+                </div>
+              ))
+            ) : (
+              <p className="text-center text-gray-500">No matching records found.</p>
+            )}
           </div>
         </div>
 

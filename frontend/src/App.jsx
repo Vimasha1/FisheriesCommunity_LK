@@ -38,6 +38,9 @@ import TotalStock from './Components/stock/TotalStock';
 import SupplierRegister from './Components/supplier/SupplierRegister';
 import SupplierList from './Components/supplier/SupplierList';
 import Report from './Components/stock/Report';
+//import supplier management
+import SupplierRegister from './Components/supplier/SupplierRegister';
+import SupplierList from './Components/supplier/SupplierList';
 
 function App() {
     const currentUser = localStorage.getItem("currentUser"); // Check if the user is logged in
@@ -63,6 +66,10 @@ function App() {
                 <Route path="/Tuna" element={<Report />} />
 
        
+                <Route path="/viewstock" element={currentUser ? <ViewStock /> : <Navigate to="/login" />} />
+                <Route path="/AddNewStock" element={currentUser ? <AddNewScock /> : <Navigate to="/login" />} />
+                <Route path="/addstock/:id" element={currentUser ? <UpdateScock /> : <Navigate to="/login" />} />
+                
                 <Route path="/BoatRegistration" element={currentUser ? <BoatR /> : <Navigate to="/login" />} />
                 <Route path="/BoatDetails" element={currentUser ? <BoatRD /> : <Navigate to="/login" />} />
                 <Route path="/BoatDetails/:id" element={currentUser ? <BoatUpdate /> : <Navigate to="/login" />} />
@@ -91,6 +98,7 @@ function App() {
 
                 <Route path="/eventDetails" element={currentUser ? <EventDetails /> : <Navigate to="/login" />} />
                 <Route path="/admin/*" element={currentUser ? <AdminPage /> : <Navigate to="/login" />} />
+                <Route path="/*" element={currentUser ? <HomeScreen /> : <Navigate to="/login" />} />
 
                 <Route path="/booking/:id" element={currentUser ? <BookingPage /> : <Navigate to="/login" />} />
                 <Route path="/profile" element={currentUser ? <UserProfilePage /> : <Navigate to="/login" />} />

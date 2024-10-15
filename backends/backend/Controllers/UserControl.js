@@ -52,6 +52,11 @@ const addUser = async (req, res, next) => {
          if(!boat){return res.status(404).json({ message: "Unable to find boat" })};
          
         user = new User({ BoatID, FishType, Quantity,FishGrade,AddedDate,Price});
+    const { BoatID, FishType, Quantity } = req.body;
+    let user;
+
+    try {
+        user = new User({ BoatID, FishType, Quantity });
         await user.save();
     } catch (err) {
         console.log(err);
@@ -73,6 +78,11 @@ const updateUser = async (req, res, next) => {
 
 
         user = await User.findByIdAndUpdate(id, { BoatID, FishType, Quantity,FishGrade,AddedDate,Price }, { new: true });
+    const { BoatID, FishType, Quantity } = req.body;
+    let user;
+
+    try {
+        user = await User.findByIdAndUpdate(id, { BoatID, FishType, Quantity }, { new: true });
     } catch (err) {
         console.log(err);
         return res.status(500).json({ message: "Unable to update user data" });
@@ -103,6 +113,9 @@ const deleteUser = async (req, res, next) => {
 
     return res.status(200).json({ message: "User deleted successfully" });
 };
+
+exports.deleteUser = deleteUser;
+
 
 exports.deleteUser = deleteUser;
 
