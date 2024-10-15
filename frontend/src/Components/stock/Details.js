@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 // Display data
 function Details(props) {
+  const { _id, BoatID, FishType, Quantity,FishGrade,AddedDate,Price } = props.user;
   const { _id, BoatID, FishType, Quantity } = props.user;
 
   const history = useNavigate();
@@ -16,6 +17,13 @@ function Details(props) {
       .then((res) => res.data)
       .then(() => window.location.reload());
   };
+
+  const formattedDate = new Date(AddedDate).toLocaleDateString("en-IN", {
+    timeZone: "Asia/Kolkata", // Set to your local timezone
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 mb-6 hover:shadow-2xl transition-shadow duration-300 ease-in-out transform hover:scale-105">
@@ -31,6 +39,18 @@ function Details(props) {
         <div className="flex justify-between items-center">
           <h3 className="font-semibold text-blue-900">Quantity:</h3>
           <p className="text-gray-600">{Quantity}</p>
+        </div>
+        <div className="flex justify-between items-center">
+          <h3 className="font-semibold text-blue-900">Grade:</h3>
+          <p className="text-gray-600">{FishGrade}</p>
+        </div>
+        <div className="flex justify-between items-center">
+          <h3 className="font-semibold text-blue-900">Date:</h3>
+          <p className="text-gray-600">{formattedDate}</p>
+        </div>
+        <div className="flex justify-between items-center">
+          <h3 className="font-semibold text-blue-900">Price:</h3>
+          <p className="text-gray-600">{Price}</p>
         </div>
       </div>
       <div className="flex justify-between items-center mt-6 space-x-4">

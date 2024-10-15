@@ -7,7 +7,13 @@ import UserNav from './UserNav';  // Importing UserNav component
 import Footer from '../../Footer';  // Importing Footer component
 
 const AllMembers = () => {
+Finance_Management(IT22297068)
+  const [paymentAmount, setPaymentAmount] = useState('');
   const [members, setMembers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+
+  const [members, setMembers] = useState([]);
+Daily_Fish_Stock_Management(IT22154408)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,6 +46,16 @@ const AllMembers = () => {
     navigate('/userpage');
   };
 
+Finance_Management(IT22297068)
+  // Filter members based on the search term
+  const filteredMembers = members.filter(member =>
+    member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    member.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+
+ Daily_Fish_Stock_Management(IT22154408)
   return (
     <div className="flex">
       <SideNav /> {/* Side Navigation */}
@@ -53,12 +69,32 @@ const AllMembers = () => {
             
             <h2 className="text-3xl font-bold text-center text-blue-700 mb-8">Community Members</h2>
 
+ Finance_Management(IT22297068)
+            {/* Search Bar */}
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Search members..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+              />
+            </div>
+
+            {/* Show members or No members message */}
+            {filteredMembers.length === 0 ? (
+              <div className="text-center text-gray-600">No community members found.</div>
+            ) : (
+              <ul className="space-y-6">
+                {filteredMembers.map((member) => (
+
             {/* Show members or No members message */}
             {members.length === 0 ? (
               <div className="text-center text-gray-600">No community members found.</div>
             ) : (
               <ul className="space-y-6">
                 {members.map((member) => (
+ Daily_Fish_Stock_Management(IT22154408)
                   <li
                     key={member._id}
                     className="border border-gray-200 p-6 rounded-lg shadow-md bg-gray-50 hover:bg-blue-50 transition duration-200"

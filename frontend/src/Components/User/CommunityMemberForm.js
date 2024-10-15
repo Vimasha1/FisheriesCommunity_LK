@@ -7,6 +7,10 @@ import Footer from '../../Footer';
 import UserNav from './UserNav';  
 
 const CommunityMemberForm = () => {
+Finance_Management(IT22297068)
+  
+
+ Daily_Fish_Stock_Management(IT22154408)
   const [formData, setFormData] = useState({
     name: '',
     address: '',

@@ -29,6 +29,9 @@ function UpdateScock() {
         BoatID: String(inputs.BoatID),
         FishType: String(inputs.FishType),
         Quantity: Number(inputs.Quantity),
+        FishGrade:String(inputs.FishGrade),
+        Price: Number(inputs.Price),
+
       })
       .then((res) => res.data);
   };
@@ -42,6 +45,7 @@ function UpdateScock() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    sendRequest().then(() => history('/viewAstock'));
     sendRequest().then(() => history('/viewstock'));
   };
 
@@ -89,10 +93,24 @@ function UpdateScock() {
                 <input
                   type="number"
                   name="Quantity"
+                  value={inputs.Quantity}
                   value={inputs.Quantity || ""}
                   onChange={handleChange}
                   required
                   placeholder="Quantity"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="relative">
+                <input
+                  type="number"
+                  name="Price"
+                  value={inputs.Price}
+                  onChange={handleChange}
+                  required
+                  min={100}
+                  placeholder="Price"
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>

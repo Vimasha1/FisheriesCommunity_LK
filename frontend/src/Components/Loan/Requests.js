@@ -23,11 +23,89 @@ function Requests() {
   }, []);
 
   const ComponentsRef = useRef();
+  const getTotalSummary = () => {
+    const totalRequestedAmount = requests.reduce((total, request) => total + request.amount, 0);
+    const totalRequests = requests.length;
+    return { totalRequestedAmount, totalRequests };
+  };
+
   const handlePrint = useReactToPrint({
     content: () => ComponentsRef.current,
-    documentTitle: "Loan Requests Report",
-    onAfterPrint: () => alert("Loan Requests Report Successfully Downloaded!"),
+    documentTitle: 'Loan Requests Report',
+    onBeforePrint: () => {
+      const { totalRequestedAmount, totalRequests } = getTotalSummary();
+      const logoUrl = process.env.PUBLIC_URL+'/logo1.png';
+
+      const reportContent = `
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            background-color: #f7f9fc;
+            color: #333;
+          }
+          h1 {
+            color: #007BFF;
+            text-align: center;
+          }
+          .logo {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .summary {
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+          }
+          .request {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #007BFF;
+            border-radius: 5px;
+            background-color: #ffffff;
+          }
+          .request strong {
+            display: inline-block;
+            margin-bottom: 5px;
+          }
+        </style>
+          <div class="logo">
+      <img src="${logoUrl}" alt="Fisheries Community Logo" style="width: 150px;"/>
+    </div>
+        <h1>Loan Requests Report</h1>
+        <div class="summary">
+          Total Loan Requests: ${totalRequests}<br>
+          Total Requested Amount: Rs. ${totalRequestedAmount}
+        </div>
+        Individual Loan Requests:<br>
+        ${requests.map(
+          (request) => `
+          <div class="request">
+            <strong>Request ID:</strong> ${request._id}<br>
+            <strong>Name:</strong> ${request.name}<br>
+            <strong>Amount:</strong> Rs. ${request.amount}<br>
+          </div>
+          `
+        ).join('')}
+         <br />
+        <div style="text-align: left; margin-top: 40px;">
+          <p><em>This report has been reviewed and is currently under revision by the Treasurer of the Fisheries Community.</em></p>
+        </div>
+      `;
+
+  
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(reportContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+    },
+   
   });
+  
+
+
 
   const handleSearch = () => {
     fetchHandler().then((data) => {
@@ -41,12 +119,6 @@ function Requests() {
     });
   };
 
-  const handleSendReport = () => {
-    const phoneNumber = "+94702345133";
-    const message = "Your Upcoming Payment is due!";
-    const WhatsAppURL = `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
-    window.open(WhatsAppURL, "_blank");
-  };
 
   return (
     <div className="flex">
@@ -93,7 +165,7 @@ function Requests() {
           {noResults ? (
             <p className="text-red-500 text-lg font-semibold">No Requests Found</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" ref={ComponentsRef}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" ref={ComponentsRef} >
               {requests && requests.map((request, i) => (
                 <div key={i} className="bg-white shadow-md rounded-lg p-6">
                   <RequestDetails request={request} /> {/* Updated to RequestDetails */}
@@ -102,15 +174,7 @@ function Requests() {
             </div>
           )}
 
-          {/* Send WhatsApp Message Button */}
-          <div className="mt-8">
-            <button
-              onClick={handleSendReport}
-              className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-600 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400"
-            >
-              Send WhatsApp Message
-            </button>
-          </div>
+         
         </div>
 
         {/* Footer */}

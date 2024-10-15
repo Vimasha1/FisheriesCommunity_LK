@@ -33,6 +33,11 @@ import AdminPage from "./pages/AdminPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import BookingPage from "./Components/Event/BookingPage";
 import EventDetails from "./Components/Event/EventDetails";
+import TotalStock from './Components/stock/TotalStock';
+//import supplier management
+import SupplierRegister from './Components/supplier/SupplierRegister';
+import SupplierList from './Components/supplier/SupplierList';
+import Report from './Components/stock/Report';
 //import supplier management
 import SupplierRegister from './Components/supplier/SupplierRegister';
 import SupplierList from './Components/supplier/SupplierList';
@@ -51,6 +56,16 @@ function App() {
                 {/* Protected Routes */}
                 <Route path="/" element={<Home />} />
                 <Route path="/mainhome" element={currentUser ? <Home /> : <Navigate to="/login" />} />
+                <Route path="/viewAstock" element={currentUser ? <ViewStock /> : <Navigate to="/login" />} />
+                <Route path="/AddNewStock" element={currentUser ? <AddNewScock /> : <Navigate to="/login" />} />
+                <Route path="/addstock/:id" element={currentUser ? <UpdateScock /> : <Navigate to="/login" />} />
+
+                <Route path="/viewTstock" element={currentUser ? <TotalStock /> : <Navigate to="/login" />} />
+                <Route path="/viewTstock" element={<TotalStock />} />
+                <Route path="/Tuna" element={currentUser ? < Report/> : <Navigate to="/login" />} />
+                <Route path="/Tuna" element={<Report />} />
+
+       
                 <Route path="/viewstock" element={currentUser ? <ViewStock /> : <Navigate to="/login" />} />
                 <Route path="/AddNewStock" element={currentUser ? <AddNewScock /> : <Navigate to="/login" />} />
                 <Route path="/addstock/:id" element={currentUser ? <UpdateScock /> : <Navigate to="/login" />} />
@@ -91,6 +106,9 @@ function App() {
                 <Route path="/supplier" element={currentUser? <SupplierRegister /> : <Navigate to="/login" />} />
                 <Route path="/supplierList" element={currentUser? <SupplierList/>  : <Navigate to="/login" /> } />
                 {/* Catch-all route */}
+
+                <Route path="/*" element={currentUser ? <HomeScreen /> : <Navigate to="/login" />} />
+
                 <Route path="*" element={<Navigate to="/login" />} />
             </Routes>
         </React.Fragment>
