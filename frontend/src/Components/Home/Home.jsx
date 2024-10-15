@@ -22,7 +22,11 @@ const Home = () => {
     { id: 5, image: EventImg, name: 'Event Management', link: '/event' },
     { id: 6, image: LoanImg, name: 'Loan Requests Management', link: '/mainloan' },
     { id: 7, image: WholesalerImg, name: 'Supplier Management', link: '/supplier' },
+Finance_Management(IT22297068)
+    { id: 8, image: CommunityImg, name: 'Community Member & Financial Management', link: '/community-member' },
+
     { id: 8, image: CommunityImg, name: 'Community Management', link: '/community-member' },
+ Daily_Fish_Stock_Management(IT22154408)
   ];
 
   return (

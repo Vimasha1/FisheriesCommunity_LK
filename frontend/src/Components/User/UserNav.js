@@ -52,6 +52,19 @@ const UserNav = () => {
         >
           Payment Details
         </NavLink>
+ Finance_Management(IT22297068)
+        <NavLink
+          to="/paymoney"
+          className={({ isActive }) =>
+            isActive
+              ? 'bg-blue-500 text-white px-4 py-2 rounded-full font-semibold shadow-lg transform scale-105'
+              : 'text-blue-700 font-semibold px-4 py-2 hover:bg-blue-200 rounded-full'
+          }
+        >
+          pay money
+        </NavLink>
+
+Daily_Fish_Stock_Management(IT22154408)
       </div>
     </nav>
   );

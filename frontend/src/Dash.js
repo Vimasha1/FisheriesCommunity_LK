@@ -12,7 +12,11 @@ const Dash = () => {
     { id: 5, image: '/event-removebg-preview.png', name: 'Event Management', link: '#' },
     { id: 7, image: '/Loan-removebg-preview.png', name: 'Loan Requests Management', link: '#' },
     { id: 8, image: '/wholesaler-removebg-preview.png', name: 'Wholesaler Management', link: '#' },
+Finance_Management(IT22297068)
+    { id: 6, image: '/null.png', name: 'Community & Financial Management', link: '#' },
+
     { id: 6, image: '/null.png', name: 'Community Management', link: '#' },
+Daily_Fish_Stock_Management(IT22154408)
   ]);
 
   return (

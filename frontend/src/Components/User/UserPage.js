@@ -9,6 +9,10 @@ import memdetail from './6670916.jpg'
 
 
 const UserPage = () => {
+Finance_Management(IT22297068)
+  
+
+ Daily_Fish_Stock_Management(IT22154408)
   const navigate = useNavigate();
 
   return (
