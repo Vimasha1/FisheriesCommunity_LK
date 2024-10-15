@@ -3,10 +3,17 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+ Finance_Management(IT22297068)
 import Header from '../../Header'; 
 import SideNav from '../../SideNav'; 
 import UserNav from './UserNav'; 
 import Footer from '../../Footer'; 
+
+import Header from '../../Header'; // Assuming you have a Header component
+import SideNav from '../../SideNav'; // Assuming you have a SideNav component
+import UserNav from './UserNav'; // Importing UserNav component
+import Footer from '../../Footer'; // Assuming you have a Footer component
+Daily_Fish_Stock_Management(IT22154408)
 
 const PaymentDetails = () => {
   const [payments, setPayments] = useState([]);
@@ -27,11 +34,14 @@ const PaymentDetails = () => {
   // Calculate total amount
   const totalAmount = payments.reduce((total, payment) => total + parseFloat(payment.amount), 0).toFixed(2);
 
+Finance_Management(IT22297068)
   // Store totalAmount in localStorage for the PayMoney page
   useEffect(() => {
     localStorage.setItem('totalAmount', totalAmount);
   }, [totalAmount]);
 
+
+Daily_Fish_Stock_Management(IT22154408)
   // Handle PDF download
   const handleDownload = () => {
     const doc = new jsPDF();

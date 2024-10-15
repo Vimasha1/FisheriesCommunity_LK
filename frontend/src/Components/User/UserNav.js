@@ -52,6 +52,7 @@ const UserNav = () => {
         >
           Payment Details
         </NavLink>
+ Finance_Management(IT22297068)
         <NavLink
           to="/paymoney"
           className={({ isActive }) =>
@@ -62,6 +63,8 @@ const UserNav = () => {
         >
           pay money
         </NavLink>
+
+Daily_Fish_Stock_Management(IT22154408)
       </div>
     </nav>
   );

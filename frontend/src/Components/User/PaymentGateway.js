@@ -7,7 +7,10 @@ import UserNav from './UserNav';  // Importing UserNav component
 import Footer from '../../Footer';  // Assuming you have a Footer component
 
 const PaymentGateway = () => {
+Finance_Management(IT22297068)
   const [paymentAmount, setPaymentAmount] = useState('');
+
+Daily_Fish_Stock_Management(IT22154408)
   const [amount, setAmount] = useState('');
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');

@@ -7,7 +7,10 @@ import UserNav from './UserNav';  // Assuming you have a UserNav component
 import Footer from '../../Footer';  // Assuming you have a Footer component
 
 const UpdateMember = () => {
+Finance_Management(IT22297068)
   const [paymentAmount, setPaymentAmount] = useState('');
+
+Daily_Fish_Stock_Management(IT22154408)
   const { id } = useParams();
   const [formData, setFormData] = useState({
     name: '',

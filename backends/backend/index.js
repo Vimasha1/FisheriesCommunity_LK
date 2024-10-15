@@ -16,6 +16,10 @@ const userRoute = require("./routes/userRoute");
 const bookingRoute = require("./routes/bookingRoute");
 const ticketRoute = require("./routes/ticketRoute");
 const paymentRoutes = require('./Routes/paymentRoutes');
+ Finance_Management(IT22297068)
+const paymentRoutes = require('./Routes/paymentRoutes');
+
+ Daily_Fish_Stock_Management(IT22154408)
 //supplier
 const dashboardRoutes = require('./routes/dashboard');
 const orderRoutes = require('./routes/orderRoutes');
@@ -27,9 +31,12 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+Finance_Management(IT22297068)
 
 // Use the payment routes
 app.use('/payments', paymentRoutes);
+
+Daily_Fish_Stock_Management(IT22154408)
 //add fish stock
 app.use("/users",userouter);
 //boat details
