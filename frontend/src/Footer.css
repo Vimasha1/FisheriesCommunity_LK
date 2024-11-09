@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&display=swap');
+
+.footer {
+    background-color: #738b9c;
+    padding: 20px 0; /* Reduced padding */
+    text-align: center;
+    color: #001f3f;
+    font-family: 'Oswald', sans-serif; /* Added font family */
+}
+
+.footer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1200px;
+    margin-left: 215px;
+}
+
+.footer-subscribe {
+    margin-bottom: 20px; /* Reduced margin */
+}
+
+.footer-subscribe h3 {
+    font-size: 16px; /* Slightly reduced font size */
+    margin-bottom: 8px; /* Reduced margin */
+}
+
+.footer-subscribe-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-subscribe-form input {
+    padding: 8px; /* Reduced padding */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 8px; /* Reduced margin */
+    width: 280px; /* Reduced width */
+}
+
+.footer-subscribe-form button {
+    padding: 8px 16px; /* Reduced padding */
+    background-color: #e91e63;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.footer-info {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 20px; /* Reduced margin */
+}
+
+.footer-info h3 {
+    font-size: 16px; /* Reduced font size */
+    margin-bottom: 10px; /* Reduced margin */
+}
+
+.footer-info p, .footer-info ul {
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.4; /* Adjusted line height */
+}
+
+.footer-info ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-info ul li {
+    margin-bottom: 8px; /* Reduced margin */
+}
+
+.footer-info ul li a {
+    color: #001f3f;
+    text-decoration: none;
+}
+
+.footer-social {
+    margin-top: 15px; /* Reduced margin */
+}
+
+.footer-social h3 {
+    font-size: 16px; /* Reduced font size */
+    margin-bottom: 10px; /* Reduced margin */
+}
+
+.footer-social-icons a {
+    font-size: 16px; /* Slightly reduced icon size */
+    margin: 0 8px; /* Reduced margin */
+    color: #333;
+    text-decoration: none;
+}

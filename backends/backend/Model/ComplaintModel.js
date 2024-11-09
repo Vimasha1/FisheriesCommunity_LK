@@ -1,4 +1,3 @@
-//complaint model
 
 const mongoose = require('mongoose');
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+
 import Header from '../../Header';
 import SideNav from '../../SideNav';
 import ComplainNav from './ComplainNav';
@@ -26,6 +27,12 @@ const Modal = ({ isOpen, onClose, complaintId }) => {
   );
 };
 
+import Header from '../../Header';  // Assuming Header component is available
+import SideNav from '../../SideNav';  // Assuming SideNav component is available
+import ComplainNav from './ComplainNav';  // Importing ComplainNav component
+import Footer from '../../Footer';  // Assuming Footer component is available
+
+
 const ComplaintForm = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -38,8 +45,11 @@ const ComplaintForm = () => {
 
   const [status, setStatus] = useState('');
   const [errors, setErrors] = useState({});
+
   const [complaintId, setComplaintId] = useState(null); // State to hold complaint ID
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+=======
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -110,6 +120,7 @@ const ComplaintForm = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
+
       // Assuming the response contains a `complaintId`
       const { complaintId } = response.data;
 
@@ -118,6 +129,9 @@ const ComplaintForm = () => {
       setIsModalOpen(true); // Open the modal
 
       // Clear the form after submission
+
+      setStatus('Complaint submitted successfully!');
+
       setFormData({
         name: '',
         mailId: '',
@@ -127,7 +141,9 @@ const ComplaintForm = () => {
         file: null,
       });
       setErrors({});
+
       setStatus('');
+
     } catch (error) {
       setStatus('Error submitting complaint. Please try again.');
     }
@@ -243,8 +259,10 @@ const ComplaintForm = () => {
           </form>
         </div>
 
+
         {/* Modal for showing the complaint ID */}
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} complaintId={complaintId} />
+
 
         {/* Footer */}
         <Footer />

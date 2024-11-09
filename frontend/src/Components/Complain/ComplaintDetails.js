@@ -1,6 +1,12 @@
+
 //complaintdetails
 import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // useNavigate for react-router-dom v6+
+
 import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 import Modal from 'react-modal';
@@ -24,12 +30,26 @@ const Complaints = () => {
     const [note, setNote] = useState('');
     const [statusFilter, setStatusFilter] = useState('All');
     const [modalIsOpen, setModalIsOpen] = useState(false);
+
     const [editModalIsOpen, setEditModalIsOpen] = useState(false); 
     const [dialogIsOpen, setDialogIsOpen] = useState(false); 
     const [notifyOption, setNotifyOption] = useState('notify'); 
     const [staffEmail, setStaffEmail] = useState(''); 
     const [pieData, setPieData] = useState({}); 
     const [assignedStaff, setAssignedStaff] = useState({}); 
+
+    const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+    const navigate = useNavigate();  // useNavigate hook from react-router-dom v6+
+
+    // Check for email in localStorage on component mount
+    useEffect(() => {
+        const email = localStorage.getItem('userEmail');
+        if (email !== 'complain@gmail.com') {
+            localStorage.clear(); // Clear localStorage
+            navigate('/login'); // Redirect to login page
+        }
+    }, [navigate]);
+
 
     useEffect(() => {
         fetchComplaints();
@@ -44,7 +64,10 @@ const Complaints = () => {
         try {
             const res = await axios.get('http://localhost:5005/complaints');
             setComplaints(res.data || []);
+
             calculateCategoryDistribution(res.data || []); 
+
+
         } catch (err) {
             setError('Failed to fetch complaints');
         } finally {
@@ -59,6 +82,7 @@ const Complaints = () => {
                 : complaints.filter(complaint => complaint.status === statusFilter)
         );
     };
+
 
     const calculateCategoryDistribution = (complaintsData) => {
         const categoryCounts = complaintsData.reduce((acc, { category }) => {
@@ -77,10 +101,12 @@ const Complaints = () => {
     };                                                                                 
 
 
+
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
     const openEditModal = () => setEditModalIsOpen(true);
     const closeEditModal = () => setEditModalIsOpen(false);
+
     const openDialog = () => {
         setDialogIsOpen(true);
         setStaffEmail(''); 
@@ -92,6 +118,7 @@ const Complaints = () => {
         setStaffEmail('');  
         setSelectedComplaint(null);
     };
+
 
     const downloadGraph = () => {
         const chartCanvas = document.getElementById('complaintPieChart');
@@ -124,13 +151,18 @@ const Complaints = () => {
     const handleEdit = (complaint) => {
         setSelectedComplaint(complaint);
         setNote(complaint.note || '');
+
         openEditModal();  // Open the edit modal
+
+        openEditModal();
+
     };
 
     const handleUpdate = async () => {
         if (!selectedComplaint) return;
         await handleChange(selectedComplaint._id, { note, ...selectedComplaint });
         setSelectedComplaint(null);
+
         closeEditModal();  // Close the edit modal after update
     };
 
@@ -216,7 +248,38 @@ const fetchComplaintDetails = async (complaintId) => {
                 <ComplainNav />
 
                 <div className="p-8">
-                    
+
+        closeEditModal();
+    };
+
+    const calculateCategoryDistribution = () => {
+        const categoryCounts = complaints.reduce((acc, { category }) => {
+            acc[category] = (acc[category] || 0) + 1;
+            return acc;
+        }, {});
+
+        const labels = ['Finance', 'Sales', 'BoatTrip', 'Employees', 'Event', 'Others'];
+        return {
+            labels,
+            data: labels.map(label => categoryCounts[label] || 0),
+        };
+    };
+
+    const { labels, data } = calculateCategoryDistribution();
+    const pieData = {
+        labels,
+        datasets: [{ data, backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'] }],
+    };
+
+    return (
+        <div className="flex">
+            <SideNav />
+            <div className="ml-56 flex-grow flex flex-col min-h-screen bg-gradient-to-r from-blue-50 to-blue-100">
+                <Header />
+                <ComplainNav />
+
+                <div className="p-8">
+
                     <h1 className="text-4xl font-bold text-blue-700 mb-6">Received Complaints</h1>
 
                     {loading && <p>Loading complaints...</p>}
@@ -267,7 +330,11 @@ const fetchComplaintDetails = async (complaintId) => {
                                                     <select
                                                         className="rounded-lg p-2 border border-gray-300 focus:ring focus:ring-blue-300"
                                                         value={complaint.assignedStaff || ''}
+
                                                         onChange={(e) => handleStaffChange(complaint._id, e.target.value)} 
+
+                                                        onChange={(e) => handleChange(complaint._id, { assignedStaff: e.target.value })}
+
                                                     >
                                                         <option value="">Choose...</option>
                                                         <option value="Treasurer">Treasurer</option>
@@ -400,6 +467,7 @@ const fetchComplaintDetails = async (complaintId) => {
                     </Modal>
                 )}
 
+
                 {/* Staff Notification Dialog */}
                 <Modal
     isOpen={dialogIsOpen}
@@ -484,6 +552,7 @@ const fetchComplaintDetails = async (complaintId) => {
         </button>
     </div>
 </Modal>
+
 
 
             </div>

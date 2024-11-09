@@ -1,4 +1,3 @@
-//controller
 const multer = require('multer');
 const Complaint = require("../Model/ComplaintModel");
 const mongoose = require('mongoose');
@@ -9,7 +8,7 @@ const { sendEmail } = require('../emailService');
 // Configure multer to store files
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/'); 
+        cb(null, 'uploads/');
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -36,7 +35,6 @@ const getAllComplaints = async (req, res) => {
 const addComplaint = async (req, res) => {
     const { name, mailId, phoneNumber, complaintType, complaintDescription, status = 'Open', note } = req.body;
 
-    // Check for missing fields
     if (!name || !mailId || !phoneNumber || !complaintType || !complaintDescription) {
         return res.status(400).json({ message: "All fields (name, email, phone, complaint type, description) are required." });
     }
@@ -44,24 +42,21 @@ const addComplaint = async (req, res) => {
     try {
         const fileUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
-        // Create a new complaint
         const complaint = new Complaint({
-            complaintId: uuidv4(), // Generate a unique complaint ID
+            complaintId: uuidv4(),
             name,
             mailId,
             phoneNumber,
             category: complaintType,
             description: complaintDescription,
             status,
-            fileUrl, 
-            note 
+            fileUrl,
+            note
         });
 
-        // Save the complaint to the database
         await complaint.save();
         
-        // Return only the complaintId
-        res.status(201).json({ complaintId: complaint.complaintId }); // Return the generated complaintId
+        res.status(201).json({ complaintId: complaint.complaintId });
     } catch (err) {
         console.error("Error saving complaint:", err);
         res.status(500).json({ message: "Unable to add complaint" });
@@ -93,7 +88,7 @@ const getComplaintById = async (req, res) => {
 // Update complaint by ID
 const updateComplaintById = async (req, res) => {
     const { id } = req.params;
-    const updates = req.body; 
+    const updates = req.body;
 
     if (!isValidObjectId(id)) {
         return res.status(400).json({ message: "Invalid ID format" });
@@ -106,7 +101,7 @@ const updateComplaintById = async (req, res) => {
             return res.status(404).json({ message: "Complaint not found" });
         }
 
-        // Prepare the email content if status is updated
+        // Send notification if status has been updated
         if (updates.status) {
             const emailSubject = `Update on your Complaint ID: ${complaint.complaintId}`;
             const emailText = `
@@ -121,76 +116,65 @@ const updateComplaintById = async (req, res) => {
                 Community Staff
             `;
 
-            // Send the email notification
             await sendEmailNotification(complaint.mailId, emailSubject, emailText);
         }
 
         res.status(200).json({ complaint });
-        
     } catch (err) {
         console.error("Error updating complaint:", err);
         res.status(500).json({ message: "Server Error" });
     }
 };
 
+// Send notification email
 const sendNotification = async (req, res) => {
     const { email, notifyOption, complaintId } = req.body;
 
-    // Validate required fields
     if (!email || !notifyOption || !complaintId) {
         return res.status(400).json({ success: false, message: 'Email, notifyOption, and complaintId are required.' });
     }
 
-    let complaint;
     try {
-        // Fetch the complaint using the MongoDB ObjectID
-        complaint = await Complaint.findById(complaintId); // Use MongoDB ID to find complaint
+        const complaint = await Complaint.findById(complaintId);
         if (!complaint) {
             return res.status(404).json({ success: false, message: 'Complaint not found.' });
         }
-    } catch (error) {
-        console.error('Error fetching complaint:', error);
-        return res.status(500).json({ success: false, message: 'Failed to fetch complaint.' });
-    }
 
-    // Construct the message with complaint details
-    let message;
-    if (notifyOption === 'notify') {
-        message = `
-            Dear Staff,
+        let message;
+        if (notifyOption === 'notify') {
+            message = `
+                Dear Staff,
 
-            You have been assigned a new complaint. Kindly requesting you to consider about  this issue.
-            Unique Complaint ID: ${complaint.complaintId}
-            MongoDB ID: ${complaint._id}
-            Name: ${complaint.name}
-            Description: ${complaint.description}
-            Email:${complaint.mailId}
-            Phone:${complaint.phoneNumber}
-            Status: ${complaint.status}
+                You have been assigned a new complaint. Kindly requesting you to consider about this issue.
+                Unique Complaint ID: ${complaint.complaintId}
+                MongoDB ID: ${complaint._id}
+                Name: ${complaint.name}
+                Description: ${complaint.description}
+                Email: ${complaint.mailId}
+                Phone: ${complaint.phoneNumber}
+                Status: ${complaint.status}
 
-            Thank you
-        `;
-    } else if (notifyOption === 'remind') {
-        message = `
-            Dear Staff,
+                Thank you
+            `;
+        } else if (notifyOption === 'remind') {
+            message = `
+                Dear Staff,
 
-            This is a reminder to follow up on the assigned complaint.
-            Unique Complaint ID: ${complaint.complaintId}
-            MongoDB ID: ${complaint._id}
-            Name: ${complaint.name}
-            Description: ${complaint.description}
-            Email: ${complaint.mailId}
-            Phone:> ${complaint.phoneNumber}
-            Status: ${complaint.status}
-            
+                This is a reminder to follow up on the assigned complaint.
+                Unique Complaint ID: ${complaint.complaintId}
+                MongoDB ID: ${complaint._id}
+                Name: ${complaint.name}
+                Description: ${complaint.description}
+                Email: ${complaint.mailId}
+                Phone: ${complaint.phoneNumber}
+                Status: ${complaint.status}
 
-            Thank you
-        `;
-    } else {
-        return res.status(400).json({ success: false, message: 'Invalid notification option' });
-    }
+                Thank you
+            `;
+        } else {
+            return res.status(400).json({ success: false, message: 'Invalid notification option' });
+        }
 
-    try {
         await sendEmail(email, 'Complaint Notification', message);
         res.status(200).json({ success: true, message: 'Email sent successfully' });
     } catch (error) {
@@ -198,11 +182,6 @@ const sendNotification = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Failed to send email', error: error.message });
     }
 };
-
-
-
-
-
 
 // Delete complaint by ID
 const deleteComplaintById = async (req, res) => {
@@ -229,11 +208,9 @@ const deleteComplaintById = async (req, res) => {
 // Export the controller functions
 module.exports = {
     getAllComplaints,
-    addComplaint: [upload.single('file'), addComplaint], // Include file upload middleware
+    addComplaint: [upload.single('file'), addComplaint],
     getComplaintById,
     updateComplaintById,
-    //assignStaffToComplaint, 
-    //remindStaff, 
     deleteComplaintById,
     sendNotification
 };
