@@ -1,9 +1,37 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+
+import Header from '../../Header';
+import SideNav from '../../SideNav';
+import ComplainNav from './ComplainNav';
+import Footer from '../../Footer';
+
+// Modal Component for showing the complaint ID
+const Modal = ({ isOpen, onClose, complaintId }) => {
+  if (!isOpen) return null; // If modal is not open, don't render anything
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
+        <h2 className="text-2xl font-semibold mb-4">Complaint Submitted</h2>
+        <p>Your complaint has been submitted successfully.</p>
+        <p className="mt-2">Complaint ID: <strong>{complaintId}</strong></p>
+        <button 
+          onClick={onClose} 
+          className="mt-6 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+};
+
 import Header from '../../Header';  // Assuming Header component is available
 import SideNav from '../../SideNav';  // Assuming SideNav component is available
 import ComplainNav from './ComplainNav';  // Importing ComplainNav component
 import Footer from '../../Footer';  // Assuming Footer component is available
+
 
 const ComplaintForm = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +45,11 @@ const ComplaintForm = () => {
 
   const [status, setStatus] = useState('');
   const [errors, setErrors] = useState({});
+
+  const [complaintId, setComplaintId] = useState(null); // State to hold complaint ID
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+=======
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -86,7 +119,19 @@ const ComplaintForm = () => {
       const response = await axios.post('http://localhost:5005/complaints', formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+
+
+      // Assuming the response contains a `complaintId`
+      const { complaintId } = response.data;
+
+      // Set the complaint ID in state and show modal
+      setComplaintId(complaintId);
+      setIsModalOpen(true); // Open the modal
+
+      // Clear the form after submission
+
       setStatus('Complaint submitted successfully!');
+
       setFormData({
         name: '',
         mailId: '',
@@ -96,6 +141,9 @@ const ComplaintForm = () => {
         file: null,
       });
       setErrors({});
+
+      setStatus('');
+
     } catch (error) {
       setStatus('Error submitting complaint. Please try again.');
     }
@@ -210,6 +258,11 @@ const ComplaintForm = () => {
             </div>
           </form>
         </div>
+
+
+        {/* Modal for showing the complaint ID */}
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} complaintId={complaintId} />
+
 
         {/* Footer */}
         <Footer />

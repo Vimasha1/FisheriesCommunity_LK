@@ -1,6 +1,12 @@
+
+//complaintdetails
+import React, { useState, useEffect } from 'react'; 
+import axios from 'axios';
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // useNavigate for react-router-dom v6+
+
 import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 import Modal from 'react-modal';
@@ -24,6 +30,14 @@ const Complaints = () => {
     const [note, setNote] = useState('');
     const [statusFilter, setStatusFilter] = useState('All');
     const [modalIsOpen, setModalIsOpen] = useState(false);
+
+    const [editModalIsOpen, setEditModalIsOpen] = useState(false); 
+    const [dialogIsOpen, setDialogIsOpen] = useState(false); 
+    const [notifyOption, setNotifyOption] = useState('notify'); 
+    const [staffEmail, setStaffEmail] = useState(''); 
+    const [pieData, setPieData] = useState({}); 
+    const [assignedStaff, setAssignedStaff] = useState({}); 
+
     const [editModalIsOpen, setEditModalIsOpen] = useState(false);
     const navigate = useNavigate();  // useNavigate hook from react-router-dom v6+
 
@@ -35,6 +49,7 @@ const Complaints = () => {
             navigate('/login'); // Redirect to login page
         }
     }, [navigate]);
+
 
     useEffect(() => {
         fetchComplaints();
@@ -49,6 +64,10 @@ const Complaints = () => {
         try {
             const res = await axios.get('http://localhost:5005/complaints');
             setComplaints(res.data || []);
+
+            calculateCategoryDistribution(res.data || []); 
+
+
         } catch (err) {
             setError('Failed to fetch complaints');
         } finally {
@@ -64,10 +83,42 @@ const Complaints = () => {
         );
     };
 
+
+    const calculateCategoryDistribution = (complaintsData) => {
+        const categoryCounts = complaintsData.reduce((acc, { category }) => {
+            acc[category] = (acc[category] || 0) + 1;
+            return acc;
+        }, {});
+        
+        const data = {
+            labels: Object.keys(categoryCounts),
+            datasets: [{
+                data: Object.values(categoryCounts),
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+            }]
+        };
+        setPieData(data); 
+    };                                                                                 
+
+
+
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
     const openEditModal = () => setEditModalIsOpen(true);
     const closeEditModal = () => setEditModalIsOpen(false);
+
+    const openDialog = () => {
+        setDialogIsOpen(true);
+        setStaffEmail(''); 
+        setNotifyOption('notify'); 
+    };
+    const closeDialog = () => {
+        setDialogIsOpen(false);
+        setNotifyOption('notify');   
+        setStaffEmail('');  
+        setSelectedComplaint(null);
+    };
+
 
     const downloadGraph = () => {
         const chartCanvas = document.getElementById('complaintPieChart');
@@ -100,13 +151,104 @@ const Complaints = () => {
     const handleEdit = (complaint) => {
         setSelectedComplaint(complaint);
         setNote(complaint.note || '');
+
+        openEditModal();  // Open the edit modal
+
         openEditModal();
+
     };
 
     const handleUpdate = async () => {
         if (!selectedComplaint) return;
         await handleChange(selectedComplaint._id, { note, ...selectedComplaint });
         setSelectedComplaint(null);
+
+        closeEditModal();  // Close the edit modal after update
+    };
+
+    const handleStaffChange = (complaintId, staff) => {
+        // Find the complaint based on the complaintId
+        const complaintToAssign = complaints.find(complaint => complaint._id === complaintId);
+
+        // Update the selectedComplaint with the found complaint
+        setSelectedComplaint(complaintToAssign);
+
+        // Update the assigned staff for the selected complaint
+        setAssignedStaff(prevState => ({
+            ...prevState,
+            [complaintId]: staff,
+        }));
+
+        // Open the dialog
+        openDialog();
+    };
+
+    // Function to handle dialog submission
+    const handleDialogSubmit = async () => {
+    if (!staffEmail) {
+        alert('Please enter a valid staff email.');
+        return;
+    }
+
+    if (!selectedComplaint || !selectedComplaint._id) {
+        alert('No complaint selected or invalid complaint ID.');
+        return;
+    }
+
+    try {
+        // Fetching the complaint details using the MongoDB ID
+        const complaintDetails = await fetchComplaintDetails(selectedComplaint._id);
+
+        // Prepare email content using the fetched complaint details
+        const emailContent = {
+            email: staffEmail,
+            notifyOption: notifyOption,
+            complaintId: selectedComplaint._id, // MongoDB ID
+            // Include other complaint details in the email body if needed
+            subject: `Notification for Complaint ID: ${complaintDetails.uniqueId}`, // Or whatever ID you want to display
+            message: `Details of the complaint:\nType: ${complaintDetails.type}\nDescription: ${complaintDetails.description}\nStatus: ${complaintDetails.status}`
+        };
+
+        const response = await axios.post('http://localhost:5005/complaints/send-notification', emailContent);
+
+        if (response.data.success) {
+            alert('Email sent successfully');
+        } else {
+            alert(`Failed to send email: ${response.data.message}`);
+        }
+    } catch (error) {
+        console.error('Error sending email:', error.response ? error.response.data : error.message);
+        alert('Error occurred while sending email: ' + (error.response ? error.response.data.message : error.message));
+    } finally {
+        closeDialog();
+    }
+};
+
+// Helper function to fetch complaint details by MongoDB ID
+const fetchComplaintDetails = async (complaintId) => {
+    try {
+        const response = await axios.get(`http://localhost:5005/complaints/${complaintId}`);
+        return response.data.complaint; 
+    } catch (error) {
+        console.error('Error fetching complaint details:', error);
+        return null;
+    }
+};
+
+
+    // Function to close the dialog
+    
+    return (
+        <div className="flex">
+            <SideNav />
+
+            <div className="ml-56 flex-grow flex flex-col min-h-screen bg-gradient-to-r from-blue-50 to-blue-100">
+                <Header />
+
+                <ComplainNav />
+
+                <div className="p-8">
+
         closeEditModal();
     };
 
@@ -137,6 +279,7 @@ const Complaints = () => {
                 <ComplainNav />
 
                 <div className="p-8">
+
                     <h1 className="text-4xl font-bold text-blue-700 mb-6">Received Complaints</h1>
 
                     {loading && <p>Loading complaints...</p>}
@@ -187,7 +330,11 @@ const Complaints = () => {
                                                     <select
                                                         className="rounded-lg p-2 border border-gray-300 focus:ring focus:ring-blue-300"
                                                         value={complaint.assignedStaff || ''}
+
+                                                        onChange={(e) => handleStaffChange(complaint._id, e.target.value)} 
+
                                                         onChange={(e) => handleChange(complaint._id, { assignedStaff: e.target.value })}
+
                                                     >
                                                         <option value="">Choose...</option>
                                                         <option value="Treasurer">Treasurer</option>
@@ -319,6 +466,95 @@ const Complaints = () => {
                         </div>
                     </Modal>
                 )}
+
+
+                {/* Staff Notification Dialog */}
+                <Modal
+    isOpen={dialogIsOpen}
+    onRequestClose={closeDialog}
+    contentLabel="Notify Staff"
+    style={{
+        content: {
+            width: '30%',
+            height: 'auto', 
+            maxHeight: '300px', 
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+            borderRadius: '30px',
+            padding: '20px',
+            backgroundColor: 'pale blue',
+           // overflow: 'hidden'
+        },
+        overlay: {
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        },
+    }}
+>
+    <h2 className="text-2xl font-bold mb-4">Notify Staff</h2>
+
+    {/* Read-Only Complaint ID Field */}
+    <div className="mb-4">
+        <label className="block text-gray-700">Complaint ID:</label>
+        <input
+            type="text"
+            className="w-full p-2 border border-gray-300 rounded-lg"
+            value={selectedComplaint ? selectedComplaint._id : ''} 
+            readOnly //read only field
+        />
+    </div>
+
+    {/* Action Selection */}
+    <div className="mb-4">
+        <label className="block text-gray-700">Select Action:</label>
+        <div className="flex items-center">
+            <input
+                type="radio"
+                value="notify"
+                checked={notifyOption === 'notify'}
+                onChange={() => setNotifyOption('notify')}
+            />
+            <label className="ml-2">Notify Staff</label>
+        </div>
+        <div className="flex items-center">
+            <input
+                type="radio"
+                value="remind"
+                checked={notifyOption === 'remind'}
+                onChange={() => setNotifyOption('remind')}
+            />
+            <label className="ml-2">Send Reminder</label>
+        </div>
+    </div>
+
+    {/* Staff Email Input */}
+    <div className="mb-4">
+        <label className="block text-gray-700">Staff Email:</label>
+        <input
+            type="email"
+            className="w-full p-2 border border-gray-300 rounded-lg"
+            value={staffEmail}
+            onChange={(e) => setStaffEmail(e.target.value)}
+            placeholder="Enter staff email"
+        />
+    </div>
+
+    {/* Action Buttons */}
+    <div className="flex justify-end">
+        <button onClick={handleDialogSubmit} className="bg-blue-500 text-white px-4 py-2 rounded-lg mr-2">
+            Send
+        </button>
+        <button onClick={closeDialog} className="bg-gray-500 text-white px-4 py-2 rounded-lg">
+            Cancel
+        </button>
+    </div>
+</Modal>
+
+
+
             </div>
         </div>
     );
